@@ -3,356 +3,100 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login & Cutscene - Game Nabhan</title>
+  <title>Login - Street Fighter: Ultimate Gang War</title>
   
   <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body {
-      background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      overflow: hidden;
+      background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+      color: #fff; display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; margin: 0; overflow: hidden;
     }
-
-    #auth-container {
-      background: rgba(22, 33, 62, 0.85);
-      backdrop-filter: blur(10px);
-      padding: 30px;
-      border-radius: 20px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-      text-align: center;
-      width: 90%;
-      max-width: 380px;
-      position: relative;
-      animation: floatContainer 4s ease-in-out infinite;
+    .auth-container {
+      background: rgba(22, 33, 62, 0.95); backdrop-filter: blur(10px);
+      padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6); text-align: center; width: 90%; max-width: 380px;
+      position: relative; z-index: 10;
     }
-
-    @keyframes floatContainer {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-    }
-
-    #cutscene-container {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-image: url('https://media.giphy.com/media/LmNwrBhejkK9EFP504/giphy.gif');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      text-align: center;
-      padding: 20px;
-    }
-
-    #cutscene-container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.78);
-      z-index: 1;
-    }
-
-    #skip-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      z-index: 3;
-      background: rgba(255, 255, 255, 0.1);
-      color: #94a3b8;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      padding: 6px 14px;
-      border-radius: 15px;
-      font-size: 13px;
-      font-weight: bold;
-      cursor: pointer;
-      width: auto !important;
-      transition: all 0.2s ease;
-    }
-
-    #skip-btn:hover {
-      background: rgba(255, 255, 255, 0.2);
-      color: #ffffff;
-      transform: scale(1.05);
-    }
-
-    .cutscene-content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .cutscene-media-box {
-      width: 130px;
-      height: 130px;
-      margin-bottom: 25px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 4px solid #00fff2;
-      box-shadow: 0 0 25px #00fff2, inset 0 0 15px #00fff2;
-      animation: mediaPulse 2s ease-in-out infinite alternate;
-    }
-
-    .cutscene-media-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    @keyframes mediaPulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 15px #00fff2; }
-      100% { transform: scale(1.05); box-shadow: 0 0 35px #e94560; border-color: #e94560; }
-    }
-
-    .fade-text {
-      font-size: 20px;
-      font-weight: bold;
-      color: #ffffff;
-      opacity: 0;
-      transform: translateY(15px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
-      max-width: 85%;
-      line-height: 1.6;
-    }
-
-    .fade-text.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .highlight-name {
-      color: #00fff2;
-      font-size: 30px;
-      text-shadow: 0 0 15px #00fff2, 0 0 30px #00fff2;
-      display: block;
-      margin-top: 6px;
-    }
-
-    .highlight-creator {
-      color: #e94560;
-      font-size: 28px;
-      text-shadow: 0 0 15px #e94560, 0 0 30px #e94560;
-      display: block;
-      margin-top: 6px;
-    }
-
-    .avatar-wrapper {
-      position: relative;
-      width: 90px;
-      height: 90px;
-      margin: 0 auto 15px;
-    }
-
-    .avatar-img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      border: 3px solid #e94560;
-      object-fit: cover;
-      box-shadow: 0 0 15px #e94560;
-      animation: pulseGlow 2s infinite alternate;
-    }
-
-    @keyframes pulseGlow {
-      0% { box-shadow: 0 0 10px #e94560; }
-      100% { box-shadow: 0 0 25px #00fff2, 0 0 10px #e94560; }
-    }
-
-    h2 {
-      margin-top: 0;
-      color: #00fff2;
-      text-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
-    }
-
-    .input-group {
-      position: relative;
-      width: 100%;
-      margin: 8px 0;
-    }
-
+    h2 { color: #00fff2; margin-bottom: 20px; text-shadow: 0 0 10px rgba(0, 255, 242, 0.5); }
+    .input-group { position: relative; width: 100%; margin: 12px 0; }
     input {
-      width: 100%;
-      padding: 12px;
-      padding-right: 40px;
-      border-radius: 8px;
-      border: 1px solid #0f3460;
-      background-color: rgba(15, 52, 96, 0.7);
-      color: #fff;
-      outline: none;
-      transition: all 0.3s ease;
+      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #0f3460;
+      background-color: rgba(15, 52, 96, 0.7); color: #fff; outline: none; font-size: 14px;
     }
+    .auth-btn {
+      width: 100%; padding: 12px; margin-top: 15px; border: none; border-radius: 10px;
+      background: linear-gradient(45deg, #e94560, #ff6b6b); color: white; font-weight: bold;
+      font-size: 15px; cursor: pointer; box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
+    }
+    .switch-auth { margin-top: 15px; font-size: 13px; color: #94a3b8; cursor: pointer; }
+    .switch-auth span { color: #00fff2; font-weight: bold; text-decoration: underline; }
+    #message { font-size: 13px; margin-top: 10px; font-weight: bold; }
 
-    input:focus {
-      border-color: #00fff2;
-      box-shadow: 0 0 10px rgba(0, 255, 242, 0.5);
-      transform: scale(1.02);
+    /* CUTSCENE SCREEN INTRO */
+    #cutscene-screen {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(5, 5, 15, 0.95); backdrop-filter: blur(12px);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      z-index: 100; text-align: center; padding: 20px;
     }
-
-    .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 18px;
-      padding: 0;
-      width: auto !important;
+    .avatar-box {
+      width: 90px; height: 90px; border-radius: 50%;
+      border: 3px solid #00fff2; box-shadow: 0 0 20px rgba(0,255,242,0.6);
+      display: flex; justify-content: center; align-items: center; font-size: 36px;
+      background: rgba(15, 52, 96, 0.8); margin-bottom: 20px;
     }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(45deg, #e94560, #ff6b6b);
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 16px;
-      margin-top: 12px;
-      box-shadow: 0 4px 15px rgba(233, 69, 96, 0.4);
-      transition: transform 0.15s ease;
+    #cutscene-text {
+      font-size: 18px; font-weight: bold; color: #00fff2; min-height: 50px;
+      text-shadow: 0 0 10px rgba(0,255,242,0.4); max-width: 320px; line-height: 1.4;
     }
-
-    button:hover {
-      transform: scale(1.04);
+    .skip-btn {
+      position: absolute; top: 20px; right: 20px;
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer;
     }
-
-    .toggle-text {
-      font-size: 14px;
-      margin-top: 15px;
-    }
-
-    .toggle-text a {
-      color: #00fff2;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    #message {
-      font-size: 14px;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
 
-  <!-- MUSIK LATAR BELAKANG -->
-  <audio id="bg-music" src="bgmusic.mp3" loop></audio>
+  <!-- Audio Musik Latar Login & Cutscene -->
+  <audio id="bg-music" loop>
+    <source src="bgmusic.mp3" type="audio/mpeg">
+  </audio>
 
-  <!-- FORM LOGIN & REGISTER -->
-  <div id="auth-container">
-    <div class="avatar-wrapper">
-      <img id="avatar-preview" class="avatar-img" src="https://api.dicebear.com/7.x/bottts/svg?seed=Gamer1" alt="Avatar">
-    </div>
-
-    <h2 id="form-title">Login Game</h2>
-    
+  <!-- FORM LOGIN / REGISTER -->
+  <div class="auth-container" id="auth-box">
+    <h2 id="auth-title">Login Game</h2>
     <div class="input-group">
-      <input type="text" id="username" placeholder="Masukkan Username" oninput="updateAvatar()">
+      <input type="text" id="username" placeholder="Masukkan Username">
     </div>
-
     <div class="input-group">
       <input type="password" id="password" placeholder="Masukkan Password">
-      <button type="button" class="toggle-password" id="eye-btn" onclick="togglePasswordVisibility()">👁️</button>
     </div>
-    
-    <button id="auth-btn" onclick="handleAuth(this)">Login</button>
-    
+    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Login</button>
+    <div class="switch-auth" onclick="toggleAuthMode()">
+      <span id="switch-text">Belum punya akun? Daftar disini</span>
+    </div>
     <p id="message"></p>
-    
-    <p class="toggle-text">
-      <span id="toggle-msg">Belum punya akun?</span>
-      <a href="#" id="toggle-btn" onclick="toggleForm(); return false;">Daftar disini</a>
-    </p>
   </div>
 
-  <!-- CUTSCENE -->
-  <div id="cutscene-container" class="hidden">
-    <button id="skip-btn" onclick="skipCutscene()">Skip ⏩</button>
-    <div class="cutscene-content">
-      <div class="cutscene-media-box">
-        <img id="cutscene-avatar" src="" alt="Avatar">
-      </div>
-      <div id="cutscene-text" class="fade-text"></div>
-    </div>
+  <!-- CUTSCENE INTRO SETELAH LOGIN -->
+  <div id="cutscene-screen" class="hidden">
+    <button class="skip-btn" onclick="goToGameDirectly()">Lewati ⏩</button>
+    <div class="avatar-box">🤖</div>
+    <div id="cutscene-text">Memuat sistem...</div>
   </div>
 
   <script>
     let isLoginMode = true;
-    let activeUsername = '';
-    let cutsceneTimer = null;
 
-    function playMusic() {
-      const music = document.getElementById('bg-music');
-      music.play().catch(e => console.log("Autoplay dicegah:", e));
-    }
-
-    function togglePasswordVisibility() {
-      const passInput = document.getElementById('password');
-      const eyeBtn = document.getElementById('eye-btn');
-      if (passInput.type === 'password') {
-        passInput.type = 'text';
-        eyeBtn.innerText = '🙈';
-      } else {
-        passInput.type = 'password';
-        eyeBtn.innerText = '👁️';
-      }
-    }
-
-    function updateAvatar() {
-      const name = document.getElementById('username').value.trim() || 'Gamer1';
-      document.getElementById('avatar-preview').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(name)}`;
-    }
-
-    function toggleForm() {
+    function toggleAuthMode() {
       isLoginMode = !isLoginMode;
-      const title = document.getElementById('form-title');
-      const btn = document.getElementById('auth-btn');
-      const toggleMsg = document.getElementById('toggle-msg');
-      const toggleBtn = document.getElementById('toggle-btn');
+      document.getElementById('auth-title').innerText = isLoginMode ? 'Login Game' : 'Daftar Akun Baru';
+      document.getElementById('auth-submit-btn').innerText = isLoginMode ? 'Login' : 'Daftar';
+      document.getElementById('switch-text').innerText = isLoginMode ? 'Belum punya akun? Daftar disini' : 'Sudah punya akun? Login disini';
       document.getElementById('message').innerText = '';
-      document.getElementById('username').value = '';
-      document.getElementById('password').value = '';
-      updateAvatar();
-
-      if (isLoginMode) {
-        title.innerText = 'Login Game';
-        btn.innerText = 'Login';
-        toggleMsg.innerText = 'Belum punya akun?';
-        toggleBtn.innerText = 'Daftar disini';
-      } else {
-        title.innerText = 'Daftar Akun Baru';
-        btn.innerText = 'Register';
-        toggleMsg.innerText = 'Sudah punya akun?';
-        toggleBtn.innerText = 'Login disini';
-      }
     }
 
     function handleAuth() {
@@ -368,12 +112,16 @@
 
       let users = JSON.parse(localStorage.getItem('game_accounts')) || {};
 
+      // Putar musik saat tombol ditekan agar lolos kebijakan autoplay browser
+      const music = document.getElementById('bg-music');
+      music.play().catch(e => console.log("Audio play prevented:", e));
+
       if (isLoginMode) {
         if (users[userInput] && users[userInput] === passInput) {
           message.style.color = '#4def8e';
           message.innerText = 'Login berhasil!';
-          playMusic();
-          setTimeout(() => startCutscene(userInput), 500);
+          localStorage.setItem('current_player', userInput);
+          setTimeout(() => startCutscene(userInput), 600);
         } else {
           message.style.color = '#ff4d4d';
           message.innerText = 'Username atau password salah!';
@@ -387,57 +135,42 @@
           localStorage.setItem('game_accounts', JSON.stringify(users));
           message.style.color = '#4def8e';
           message.innerText = 'Berhasil daftar!';
-          playMusic();
+          localStorage.setItem('current_player', userInput);
           setTimeout(() => startCutscene(userInput), 800);
         }
       }
     }
 
+    // RANGKAIAN ANIMASI CUTSCENE INTRO
     function startCutscene(username) {
-      activeUsername = username;
-      document.getElementById('auth-container').classList.add('hidden');
-      const cutscene = document.getElementById('cutscene-container');
-      const textElem = document.getElementById('cutscene-text');
-      
-      document.getElementById('cutscene-avatar').src = `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(username)}`;
-      cutscene.classList.remove('hidden');
+      document.getElementById('auth-box').classList.add('hidden');
+      document.getElementById('cutscene-screen').classList.remove('hidden');
 
-      const slides = [
-        `Inisialisasi sistem... Selamat datang, <span class="highlight-name">${username}</span>!`,
-        `Memuat data lokal browser...`,
-        `Dirancang oleh master koding: <span class="highlight-creator">NABHAN</span>`,
-        `Didukung oleh <span class="highlight-name">GEMINI AI</span>`,
-        `Memasuki dunia utama game...`
+      const texts = [
+        `Inisialisasi sistem... Selamat datang, ${username}!`,
+        "Memuat data lokal browser...",
+        "Dirancang oleh Master Koding: NABHAN",
+        "Didukung oleh GEMINI AI",
+        "Memasuki dunia utama game..."
       ];
 
       let index = 0;
-      function playSlide() {
-        if (index < slides.length) {
-          textElem.innerHTML = slides[index];
-          textElem.classList.add('show');
-          cutsceneTimer = setTimeout(() => {
-            textElem.classList.remove('show');
-            cutsceneTimer = setTimeout(() => {
-              index++;
-              playSlide();
-            }, 500);
-          }, 1800);
+      const textBox = document.getElementById('cutscene-text');
+
+      function showNextText() {
+        if (index < texts.length) {
+          textBox.innerText = texts[index];
+          index++;
+          setTimeout(showNextText, 2500);
         } else {
-          goToGame();
+          goToGameDirectly();
         }
       }
-      playSlide();
+
+      showNextText();
     }
 
-    function skipCutscene() {
-      clearTimeout(cutsceneTimer);
-      goToGame();
-    }
-
-    function goToGame() {
-      // Simpan nama player ke localStorage biar bisa dibaca di game.html
-      localStorage.setItem('current_player', activeUsername);
-      // Pindah ke file game.html
+    function goToGameDirectly() {
       window.location.href = 'game.html';
     }
   </script>
